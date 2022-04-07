@@ -1,5 +1,5 @@
 import React from 'react';
-const style = import(`./COMPONENT_NAME.module.scss`);
+import style from './COMPONENT_NAME.module.scss';
 
 interface COMPONENT_NAMEProps { 
 
