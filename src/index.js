@@ -51,15 +51,17 @@ program
   )
   .parse(process.argv);
 
-const [componentName] = program.args;
+let [componentName] = program.args;
+componentName = componentName.replace(/[\w]/, componentName[0].toUpperCase())
 
 // Find the path to the selected template file.
 const templatePath = `./templates/${program.type}.js`;
 
 // Get all of our file paths worked out, for the user's project.
 const componentDir = `${program.dir}/${componentName}`;
-const filePath = `${componentDir}/${componentName}.${program.extension}`;
-const indexPath = `${componentDir}/index.${program.extension}`;
+const filePath = `${componentDir}/${componentName}.tsx`;
+const indexPath = `${componentDir}/index.tsx`;
+const stylePath = `${componentDir}/${componentName}.module.scss`;
 
 // Our index template is super straightforward, so we'll just inline it for now.
 const indexTemplate = prettify(`\
@@ -105,7 +107,7 @@ mkDirPromise(componentDir)
   .then((template) =>
     // Replace our placeholders with real data (so far, just the component name)
     template.replace(/COMPONENT_NAME/g, componentName)
-  )
+)
   .then((template) =>
     // Format it using prettier, to ensure style consistency, and write to file.
     writeFilePromise(filePath, prettify(template))
@@ -117,6 +119,10 @@ mkDirPromise(componentDir)
   .then((template) =>
     // We also need the `index.js` file, which allows easy importing.
     writeFilePromise(indexPath, prettify(indexTemplate))
+)
+  .then((template) =>
+    // We also need the `index.js` file, which allows easy importing.
+    writeFilePromise(stylePath, '')
   )
   .then((template) => {
     logItemCompletion('Index file built and saved to disk.');
